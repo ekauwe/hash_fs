@@ -1,6 +1,9 @@
 from hashlib import md5, sha1
+import json
 import os
+import sqlite3
 import sys
+
 
 #check to see if error on dir is thrown, default to usage 
 def check():
@@ -29,6 +32,9 @@ def hashFiles(_dir):
             hfile.close()
     #returns the hash dict, key(dir) -> values(hash) Note: md5 hash values for now
     return hashDict
+
+#database -> first attempt will be with sqlite3
+#def saveDatabase():
 
 if __name__ == '__main__':
     check()
