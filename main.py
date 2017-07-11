@@ -9,12 +9,12 @@ import time
 
 #check to see if error on dir is thrown, default to usage 
 def check():
-    try:
+    if len(sys.argv) > 2:
+        usage()
+        return 0
+    else:
         hashes = hashFiles(sys.argv[1])
         return hashes
-    except:
-            usage()
-            return 0
 
 #generic usage, will replace with argparse or something later
 def usage():
@@ -29,7 +29,11 @@ def hashFiles(_dir):
     for dirName, subDir, fileList in os.walk(_dir):
         for _file in fileList:
             #read the file 
-            hfile  = open(dirName+'/'+_file,'r')
+            try:
+                hfile  = open(dirName+'/'+_file,'r')
+            except:
+                print 'Could not open %s' % dirName+_file
+                continue    
             #add key -> value into hashDict
             hashDict[dirName+'/'+_file] = {}
             hashDict[dirName+'/'+_file]['time'] = time.ctime()
@@ -38,7 +42,7 @@ def hashFiles(_dir):
             hashDict[dirName+'/'+_file]['file'] = _file
             hashDict[dirName+'/'+_file]['dir'] = dirName
             hashDict[dirName+'/'+_file]['sha256'] = sha256(hfile.read()).hexdigest()
-            hashDict[dirName+'/'+_file]['size'] = 'wip_size'
+            hashDict[dirName+'/'+_file]['size'] = os.stat(dirName+_file)[6] #os.stat size
 
             hfile.close()
     #returns the hash dict, key(dir) -> values(hash) Note: md5 hash values for now
