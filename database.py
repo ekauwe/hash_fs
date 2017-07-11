@@ -1,6 +1,5 @@
 #database.py
 import sqlite3
-import time
 
 def Init(db_name):
     conn = sqlite3.connect(db_name)
@@ -12,9 +11,9 @@ def Init(db_name):
 def InsertData(conn, hashDict):
     c = conn.cursor()
     for key in hashDict:
-        query = "INSERT INTO file_hashes VALUES ('%s', '%s', '%s', 0, 0)" % (time.ctime(), key, hashDict[key])
+        query = "INSERT INTO file_hashes VALUES ('%s', '%s', '%s', '%s', 0)" % (hashDict[key]['time'], key, hashDict[key]['md5'], hashDict[key]['sha1'])
+        print query
         c.execute(query)
         conn.commit()
-    c.execute("select * from file_hashes")
     return 0
     
