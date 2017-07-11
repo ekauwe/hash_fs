@@ -4,6 +4,7 @@ import json
 import os
 import database
 import sys
+import time
 
 
 #check to see if error on dir is thrown, default to usage 
@@ -13,6 +14,7 @@ def check():
         return hashes
     except:
             usage()
+            return 0
 
 #generic usage, will replace with argparse or something later
 def usage():
@@ -29,7 +31,11 @@ def hashFiles(_dir):
             #read the file 
             hfile  = open(dirName+'/'+_file,'r')
             #add key -> value into hashDict
-            hashDict[dirName+'/'+_file] = md5(hfile.read()).hexdigest()
+            hashDict[dirName+'/'+_file] = {}
+            hashDict[dirName+'/'+_file]['time'] = time.ctime()
+            hashDict[dirName+'/'+_file]['md5'] = md5(hfile.read()).hexdigest()
+            hashDict[dirName+'/'+_file]['sha1'] = sha1(hfile.read()).hexdigest()
+
             hfile.close()
     #returns the hash dict, key(dir) -> values(hash) Note: md5 hash values for now
     return hashDict
@@ -39,5 +45,6 @@ def hashFiles(_dir):
 
 if __name__ == '__main__':
     hashDict = check()
-    db = database.Init("hash_fs.sqlite")
-    result = database.InsertData(db, hashDict)
+    if hashDict:
+        db = database.Init("hash_fs.sqlite")
+        result = database.InsertData(db, hashDict)
