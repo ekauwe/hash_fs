@@ -32,17 +32,18 @@ def hashFiles(_dir):
             path = os.path.join(dirName, _file)
             try:
                 hfile  = open(path,'r')
+                data = hfile.read()
             except:
                 print 'Could not open %s' % path
                 continue    
             #add key -> value into hashDict
             hashDict[path] = {}
             hashDict[path]['time'] = time.ctime()
-            hashDict[path]['md5'] = md5(hfile.read()).hexdigest()
-            hashDict[path]['sha1'] = sha1(hfile.read()).hexdigest()
+            hashDict[path]['md5'] = md5(data).hexdigest()
+            hashDict[path]['sha1'] = sha1(data).hexdigest()
             hashDict[path]['file'] = _file
             hashDict[path]['dir'] = dirName
-            hashDict[path]['sha256'] = sha256(hfile.read()).hexdigest()
+            hashDict[path]['sha256'] = sha256(data).hexdigest()
             hashDict[path]['size'] = os.stat(path)[6] #os.stat size
 
             hfile.close()
