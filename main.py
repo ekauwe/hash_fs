@@ -29,20 +29,21 @@ def hashFiles(_dir):
     for dirName, subDir, fileList in os.walk(_dir):
         for _file in fileList:
             #read the file 
+            path = os.path.join(dirName, _file)
             try:
-                hfile  = open(dirName+'/'+_file,'r')
+                hfile  = open(path,'r')
             except:
-                print 'Could not open %s' % dirName+_file
+                print 'Could not open %s' % path
                 continue    
             #add key -> value into hashDict
-            hashDict[dirName+'/'+_file] = {}
-            hashDict[dirName+'/'+_file]['time'] = time.ctime()
-            hashDict[dirName+'/'+_file]['md5'] = md5(hfile.read()).hexdigest()
-            hashDict[dirName+'/'+_file]['sha1'] = sha1(hfile.read()).hexdigest()
-            hashDict[dirName+'/'+_file]['file'] = _file
-            hashDict[dirName+'/'+_file]['dir'] = dirName
-            hashDict[dirName+'/'+_file]['sha256'] = sha256(hfile.read()).hexdigest()
-            hashDict[dirName+'/'+_file]['size'] = os.stat(dirName+_file)[6] #os.stat size
+            hashDict[path] = {}
+            hashDict[path]['time'] = time.ctime()
+            hashDict[path]['md5'] = md5(hfile.read()).hexdigest()
+            hashDict[path]['sha1'] = sha1(hfile.read()).hexdigest()
+            hashDict[path]['file'] = _file
+            hashDict[path]['dir'] = dirName
+            hashDict[path]['sha256'] = sha256(hfile.read()).hexdigest()
+            hashDict[path]['size'] = os.stat(path)[6] #os.stat size
 
             hfile.close()
     #returns the hash dict, key(dir) -> values(hash) Note: md5 hash values for now
