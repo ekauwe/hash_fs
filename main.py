@@ -1,5 +1,5 @@
 #main.py
-from hashlib import md5, sha1, sha256
+import hashlib
 import json
 import os
 import database
@@ -32,21 +32,34 @@ def hashFiles(_dir):
             path = os.path.join(dirName, _file)
             try:
                 hfile  = open(path,'r')
-                data = hfile.read()
             except:
                 print 'Could not open %s' % path
                 continue    
+
+            md5 = hashlib.md5()
+            sha1 = hashlib.sha1()
+            sha256 = hashlib.sha256()
+
+            #read file in chunks -> definitely a better way to do this
+            while True:
+                data = hfile.read(128)
+                if not data:
+                    break
+                md5.update(data)
+                sha1.update(data)
+                sha256.update(data)
+
+
             #add key -> value into hashDict
             hashDict[path] = {}
             hashDict[path]['time'] = time.ctime()
-            hashDict[path]['md5'] = md5(data).hexdigest()
-            hashDict[path]['sha1'] = sha1(data).hexdigest()
+            hashDict[path]['md5'] = md5.hexdigest()
+            hashDict[path]['sha1'] = sha1.hexdigest()
             hashDict[path]['file'] = _file
             hashDict[path]['dir'] = dirName
-            hashDict[path]['sha256'] = sha256(data).hexdigest()
+            hashDict[path]['sha256'] = sha256.hexdigest()
             hashDict[path]['size'] = os.stat(path)[6] #os.stat size
 
-            hfile.close()
     #returns the hash dict, key(dir) -> values(hash) Note: md5 hash values for now
     return hashDict
 
