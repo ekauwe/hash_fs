@@ -1,7 +1,8 @@
+#main.py
 from hashlib import md5, sha1
 import json
 import os
-import sqlite3
+import database
 import sys
 
 
@@ -9,7 +10,7 @@ import sys
 def check():
     try:
         hashes = hashFiles(sys.argv[1])
-        print hashes
+        return hashes
     except:
             usage()
 
@@ -37,4 +38,6 @@ def hashFiles(_dir):
 #def saveDatabase():
 
 if __name__ == '__main__':
-    check()
+    hashDict = check()
+    db = database.Init("hash_fs.sqlite")
+    result = database.InsertData(db, hashDict)
