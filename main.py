@@ -1,5 +1,5 @@
 #main.py
-from hashlib import md5, sha1
+from hashlib import md5, sha1, sha256
 import json
 import os
 import database
@@ -35,6 +35,10 @@ def hashFiles(_dir):
             hashDict[dirName+'/'+_file]['time'] = time.ctime()
             hashDict[dirName+'/'+_file]['md5'] = md5(hfile.read()).hexdigest()
             hashDict[dirName+'/'+_file]['sha1'] = sha1(hfile.read()).hexdigest()
+            hashDict[dirName+'/'+_file]['file'] = _file
+            hashDict[dirName+'/'+_file]['dir'] = dirName
+            hashDict[dirName+'/'+_file]['sha256'] = sha256(hfile.read()).hexdigest()
+            hashDict[dirName+'/'+_file]['size'] = 'wip_size'
 
             hfile.close()
     #returns the hash dict, key(dir) -> values(hash) Note: md5 hash values for now
