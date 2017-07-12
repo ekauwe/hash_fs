@@ -31,7 +31,7 @@ def hashFiles(_dir):
             #read the file 
             path = os.path.join(dirName, _file)
             try:
-                hfile  = open(path,'r')
+                hfile  = open(path,'rb')
             except:
                 print 'Could not open %s' % path
                 continue    
