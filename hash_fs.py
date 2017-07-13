@@ -10,6 +10,8 @@ import time
 
 class Hash_fs(object):
     def __init__(self, file, dir='./'):
+        self.scount = len(file)
+        self.ccount = 0
         if isinstance(file, list):
             self.dir = dir
             self.file = enumerate(file)
@@ -20,11 +22,14 @@ class Hash_fs(object):
     def run(self):
         if isinstance(self.file, enumerate):
             output = {}
+            print '%s files' % self.scount
             for i, f in self.file:
                 path = os.path.join(self.dir,f)
                 data = self.getHashes(path,f)
                 if data:
                     output.update(data)
+                self.ccount += 1
+                print '%s/%s files' % (self.ccount, self.scount)
             if output:
                 return output
             return None
@@ -47,7 +52,7 @@ class Hash_fs(object):
 
         #read file in chunks -> definitely a better way to do this
         while True:
-            data = hfile.read(128)
+            data = hfile.read(6144)
             if not data:
                 break
             md5.update(data)
@@ -110,11 +115,11 @@ if __name__ == '__main__':
             test = Hash_fs(fileList, dir)
             results = test.run()
     if args.output:
-        print 'insert into file: %s' % args.output
         #print results
         with open(args.output, 'w+') as f:
             json.dump(results, f)
+        print 'insert into file: %s' % args.output
     else:
-        print 'insert into db: %s' % args.db
         db = database.Init(args.db)
         database.InsertData(db,results)
+        print 'insert into db: %s' % args.db
