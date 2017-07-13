@@ -1,12 +1,12 @@
 #hash_fs.py
 import argparse
 import hashlib
-import database
 import json
 import os
 import sys
 import textwrap
 import time
+from database import Sql_hashfs
 
 class Hash_fs(object):
     def __init__(self, file, dir='./'):
@@ -125,6 +125,6 @@ if __name__ == '__main__':
             json.dump(results, f)
         print 'insert into file: %s' % args.output
     else:
-        db = database.Init(args.db)
-        database.InsertData(db,results)
+        db = Sql_hashfs(args.db)
+        Sql_hashfs.InsertData(db,results)
         print 'insert into db: %s' % args.db
