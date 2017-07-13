@@ -47,7 +47,7 @@ class Hash_fs(object):
             return    
 
         md5 = hashlib.md5()
-        #sha1 = hashlib.sha1()
+        sha1 = hashlib.sha1()
         #sha256 = hashlib.sha256()
 
         #read file in chunks -> definitely a better way to do this
@@ -56,7 +56,7 @@ class Hash_fs(object):
             if not data:
                 break
             md5.update(data)
-            #sha1.update(data)
+            sha1.update(data)
             #sha256.update(data)
 
         #add key -> value into hashDict
@@ -64,7 +64,7 @@ class Hash_fs(object):
         hashDict[path] = {}
         hashDict[path]['time'] = time.ctime()
         hashDict[path]['md5'] = md5.hexdigest()
-        hashDict[path]['sha1'] = ''#sha1.hexdigest()
+        hashDict[path]['sha1'] = sha1.hexdigest()
         hashDict[path]['file'] = f
         hashDict[path]['dir'] = self.dir
         hashDict[path]['sha256'] = ''#sha256.hexdigest()
@@ -114,8 +114,11 @@ if __name__ == '__main__':
         results.update(test.run())
     else:
         for dir, subDir, fileList in os.walk(args.dir):
+            check = {}
             test = Hash_fs(fileList, dir)
-            results.update(test.run())
+            check = test.run()
+            if check:
+                results.update(check)
     if args.output:
         #print results
         with open(args.output, 'w+') as f:
