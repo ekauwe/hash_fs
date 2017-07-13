@@ -71,30 +71,45 @@ if __name__ == '__main__':
      formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent('''\
         Hash_fs:
-        Generic hashing script. Hashes files and saves it 
-        to a SQLite3 database.
-        ---------------------------------------------------
-        Recursively hash files starting in "/etc" directory: [default pwd]
-        %s -d /etc, %s --directory /etc 
+            Generic hashing script. Hashes files and saves it 
+            to a SQLite3 database.
+        ------------------------------------------------------------------
+            Recursively hash files starting in "/etc" directory: [default pwd]
+            %s -d /etc, %s --directory /etc 
 
-        Hash "/etc/hosts" file:
-        %s -f /etc/hosts, %s --file /etc/hosts
+            Hash "/etc/hosts" file:
+            %s -f /etc/hosts, %s --file /etc/hosts
+        
+            Specify database: [defaults to hash_fs.sqlite]
+            %s -d /etc --db new_hash_fs.sqlite3
+        
+            Output to file: (in lieu of using db)
+            %s -f /etc/hosts -o results.txt, %s -f/etc/hosts --output results.txt
+         ''' % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0])))
 
-        Specify database: [defaults to hash_fs.sqlite]
-        %s -d /etc --db new_hash_fs.sqlite3
-         ''' % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0])))
 
     parser.add_argument('--directory','-d', dest='dir', action='store',
-                    default='./', help='-d, --directory /etc')
+                    default=os.getcwd(), help='')
     parser.add_argument('--file','-f', dest='file', action='store',
-                    default=False, help='-f, --file /etc/hosts')
+                    default=False, help='')
     parser.add_argument('--db', dest='db', action='store',
-                    default='hash_fs.sqlite3', help='--db new_hash_fs.sqlite3')
+                    default='hash_fs.sqlite3', help='')
+    parser.add_argument('-o', '--output', dest='output', action='store',
+                    default=False, help='')
 
     args = parser.parse_args()
 
-    if arg.file:
-
-    for dir, subDir, fileList in os.walk(args.dir):
-        test = Hash_fs(fileList, dir)
-        print test.run()
+    if args.file:
+        test = Hash_fs(args.file, args.dir)
+        results = test.run()
+    else:
+        for dir, subDir, fileList in os.walk(args.dir):
+            test = Hash_fs(fileList, dir)
+            results = test.run()
+    if args.output:
+        print 'insert into file: %s' % args.output
+        with open(args.output, 'w') as f:
+            f.write(results)
+    else:
+        print 'insert into db: %s' % args.db
+        print results 
