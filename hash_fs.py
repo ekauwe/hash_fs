@@ -93,6 +93,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if arg.file:
+
     for dir, subDir, fileList in os.walk(args.dir):
         test = Hash_fs(fileList, dir)
         print test.run()
