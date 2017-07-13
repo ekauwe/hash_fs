@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import database
+import json
 import os
 import sys
 import textwrap
@@ -21,7 +22,9 @@ class Hash_fs(object):
             output = {}
             for i, f in self.file:
                 path = os.path.join(self.dir,f)
-                output[path] = self.getHashes(path)
+                data = self.getHashes(path,f)
+                if data:
+                    output[path] = data
             if output:
                 return output
             return None
@@ -30,7 +33,7 @@ class Hash_fs(object):
             path = os.path.join(self.dir, self.file)
             return self.getHashes(path)
 
-    def getHashes(self, path):
+    def getHashes(self, path, f):
          #read the file 
         try:
             hfile  = open(path,'rb')
@@ -57,7 +60,7 @@ class Hash_fs(object):
         hashDict[path]['time'] = time.ctime()
         hashDict[path]['md5'] = md5.hexdigest()
         hashDict[path]['sha1'] = sha1.hexdigest()
-        hashDict[path]['file'] = self.file
+        hashDict[path]['file'] = f
         hashDict[path]['dir'] = self.dir
         hashDict[path]['sha256'] = sha256.hexdigest()
         hashDict[path]['size'] = os.stat(path)[6] #os.stat size
@@ -108,8 +111,9 @@ if __name__ == '__main__':
             results = test.run()
     if args.output:
         print 'insert into file: %s' % args.output
-        with open(args.output, 'w') as f:
-            f.write(results)
+        #print results
+        with open(args.output, 'w+') as f:
+            json.dump(results, f)
     else:
         print 'insert into db: %s' % args.db
         print results 
