@@ -24,14 +24,14 @@ class Hash_fs(object):
                 path = os.path.join(self.dir,f)
                 data = self.getHashes(path,f)
                 if data:
-                    output[path] = data
+                    output.update(data)
             if output:
                 return output
             return None
 
         else:
             path = os.path.join(self.dir, self.file)
-            return self.getHashes(path)
+            return self.getHashes(path, self.file)
 
     def getHashes(self, path, f):
          #read the file 
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     parser.add_argument('--file','-f', dest='file', action='store',
                     default=False, help='')
     parser.add_argument('--db', dest='db', action='store',
-                    default='hash_fs.sqlite3', help='')
+                    default='hash_fs.sqlite', help='')
     parser.add_argument('-o', '--output', dest='output', action='store',
                     default=False, help='')
 
@@ -116,4 +116,5 @@ if __name__ == '__main__':
             json.dump(results, f)
     else:
         print 'insert into db: %s' % args.db
-        print results 
+        db = database.Init(args.db)
+        database.InsertData(db,results)
